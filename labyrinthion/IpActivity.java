@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 /**
- * Activity der Ip-Adressen Eingabe
+ * Activity for ip-address input
  */
 public class IpActivity extends AppCompatActivity {
     int soundOn = 0;
@@ -31,12 +31,12 @@ public class IpActivity extends AppCompatActivity {
 
 
     /** OnCreate-Methode
-     *Eingabe Texte werden per ID zugewiesen
-     *Button wird zugewiesen
-     *Hier wird nach dem Click auf den SpeicherButton ein Flag auf true gesetzt, und das Spielfeld wird freigeschaltet.
-     *Text wird aus EditText genommen und in String umgewandelt
-     * Werden in public Variabeln gespeichert und verbindet sich mit Broker
-     * Danach schließt sich die Seite
+     *input texts will be assigned with ids
+     *assign button
+     *after clicking on savebutton, flag is true and the game will be unlocked
+     *Text from EditText is converted to a string
+     * will be saved in a public variable and is connecting to broker
+     * page will be closed
      */
 
     @Override
@@ -67,7 +67,7 @@ public class IpActivity extends AppCompatActivity {
     }
 
     /**
-     * Baut den Header nach der example_menu.xml Datei auf
+     * building header like in the example_menu.xml file
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -78,17 +78,13 @@ public class IpActivity extends AppCompatActivity {
 
 
     /**
-     * IPActivity wird aufgemacht
+     * open IPactivity
      */
     public void openIpActivity() {
         Intent intent = new Intent(this, IpActivity.class);
         startActivity(intent);
     }
 
-    /**
-     * Menuefunktionen im Header werden hier deklariert
-     * je nach ID in der example_menu.xml datei wird die funktion aufgerufen
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -124,7 +120,7 @@ public class IpActivity extends AppCompatActivity {
     }
 
     /**
-     * BestenlisteActivity wird aufgemacht
+     * open leaderboard
      */
     public void openBestenlisteActivity() {
         Intent intent = new Intent(this, BestenlisteActivity.class);
