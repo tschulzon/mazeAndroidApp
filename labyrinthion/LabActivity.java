@@ -75,7 +75,7 @@ public class LabActivity extends AppCompatActivity {
     private String msgStart = "START";
     private String msgFinish = "FINISH";
 
-    private static String BROKER = "192.168.1.32";
+    private static String BROKER = "xxx";
     private static int PORT = 1883;
 
     public static String endTime;
@@ -185,7 +185,7 @@ public class LabActivity extends AppCompatActivity {
 
         mqttManager = new MqttManager();
 
-        // Erzeuge eine Instanz der MazeView und füge sie zum Layout hinzu
+        //create an instance of mazeView and insert it into the layout
         mazeView = new MazeView(this);
 
         mainLayout.addView(mazeView);
@@ -211,7 +211,7 @@ public class LabActivity extends AppCompatActivity {
         }
         else
         {
-                // Handysteuerung deaktivieren
+                //deactivate smartphone controls
                 sensorManager.unregisterListener(sensorEventListener);
                 mqttManager.subscribeToBroker("mpu/M01", new MqttManager.MqttMessageListener() {
                     @Override
@@ -251,7 +251,7 @@ public class LabActivity extends AppCompatActivity {
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            // Wird aufgerufen, wenn sich die Genauigkeit des Sensors ändert
+            //if the accuracy of the sensors has changed, function will be runned through
         }
     };
 
@@ -294,27 +294,27 @@ public class LabActivity extends AppCompatActivity {
             this.width = width;
             this.height = height;
             maze = new int[width][height];
-            generateMaze(0, 0); //Labyrinth-Generierung wird gestartet
+            generateMaze(0, 0); //maze-generation will start
             setGoal();
         }
 
         private void generateMaze(int x, int y) {
-            maze[x][y] = 1; //Weg bzw. ist besucht
-            maze[0][0] = 2; //Beginn
-            maze[MAZE_WIDTH - 1][MAZE_HEIGHT - 1] = 3; //Ziel
+            maze[x][y] = 1; //path has been visited
+            maze[0][0] = 2; //finish
+            maze[MAZE_WIDTH - 1][MAZE_HEIGHT - 1] = 3; //goal
 
 
-            //Zufällige Reihenfolge der Richtungen
-            //oben, unten, links, rechts
+            //random order of the directions
+            //top, bottom, left, right
             int[] directions = {0, 1, 2, 3};
             shuffleArray(directions);
 
-            //Richtungen werden durchlaufen
+            //getting through directions
             for (int direction : directions) {
                 int nx = x;
                 int ny = y;
 
-                //Koordinaten neu berechnen basierend auf der Richtung
+                //calculating new coordinates based on the direction
                 if (direction == 0 && y > 1) {
                     ny -= 2;
                 } else if (direction == 1 && y < height - 2) {
@@ -325,29 +325,29 @@ public class LabActivity extends AppCompatActivity {
                     nx += 2;
                 }
 
-                //unbesuchte Felder als besucht markieren
+                //tagging not visited field as visited
                 if (maze[nx][ny] == 0){
                     maze[nx][ny] = 1;
-                    //Feld zwischen aktuellen und nächsten Coords als besucht markieren
+                    //tagging field between current and next coordinates as visited
                     maze[(x + nx) / 2][(y + ny) / 2] = 1;
-                    generateMaze(nx, ny); //Generierung rekursiv für das nächste Feld aufrufen
+                    generateMaze(nx, ny); //recursive generation for the next field
                 }
             }
         }
 
         private void setGoal(){
-            //Ausgang wird hier definiert
-            //soll immer rechts unten in der Ecke sein
+            //definition of the goal -> should be always right at the bottom in the corner
             int goalX = width - 1;
             int goalY = height - 1;
 
-            //hier wird überprüft ob das Feld über dem Ziel eine Wand ist
-            //falls ja, soll das Feld links daneben ein Weg sein
+            //checking if the field above the goal is a wall
+            //if true, field left should be a path
             if (maze[goalX][goalY - 1] != 1) {
                 maze[goalX - 1][goalY] = 1;
             }
-            //hier wird überprüft ob das Feld links neben dem Ziel eine Wand ist
-            //falls ja, ist das Feld über dem Ziel ein Weg
+
+            //checking if the field left from goal is a wall
+            //if true, field above should be a path
             else if(maze[goalX - 1][goalY] != 1) {
                 maze[goalX][goalY - 1] = 1;
             }
@@ -390,13 +390,13 @@ public class LabActivity extends AppCompatActivity {
         }
 
         public MazeView(Context context, AttributeSet attrs) {
-            super(context, attrs); //view von xml wird geholt
+            super(context, attrs); //getting the view from xml
             init();
         }
 
         private void init() {
 
-            String hexColor = "#9eb76b"; // Beispiel-Hex-Farbwert
+            String hexColor = "#9eb76b";
             int colorWall = Color.parseColor(hexColor);
 
             MazeGenerator mazeGenerator = new MazeGenerator(MAZE_WIDTH, MAZE_HEIGHT);
@@ -422,7 +422,7 @@ public class LabActivity extends AppCompatActivity {
 
 
         public void updateBallPosition(float xAxis, float yAxis) {
-            // Begrenzt die Achsenwerte auf den definierten Wertebereich
+            //limit axis values with the defined range of values
             xAxis = Math.max(Math.min(xAxis, 95.0f), -85.0f);
             yAxis = Math.max(Math.min(yAxis, 2.0f), -2.0f);
 
