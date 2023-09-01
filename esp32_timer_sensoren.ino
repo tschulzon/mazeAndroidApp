@@ -1,8 +1,8 @@
 /* 
-Code zur Programmierung eines hardwarebasierten Timers auf den ESP32.
-Basierend auf dem Beispielcode "RepeatTimer.ino" aus Arduino.
+Code for programming a hardware timers on a ESP32.
+based on example code "RepeatTimer.ino" from Arduino.
 
-Von Maximilian Lippmann und Juliana Kühn (Beide MI)
+from teammember1 and Juliana Kühn
  */
 
 #include <Wire.h>
@@ -11,14 +11,13 @@ Von Maximilian Lippmann und Juliana Kühn (Beide MI)
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-//Definition WiFi Daten(Name und Passwort)
-const char* ssid     = "ki-lokal";
-const char* password = "dc-ki-2022+";
+//definition WiFi name and password
+const char* ssid     = "xxx"
+const char* password = "xxx";
 
-//Definition MQTT Broker (IP-Adresse und Port)
+//definition MQTT Broker (IP-address and port)
 
-//OTH
-const char* mqtt_broker = "192.168.1.4";
+const char* mqtt_broker = "xxx";
 int mqttPort = 1883;
 
 Adafruit_MPU6050 mpu;
@@ -27,25 +26,25 @@ PubSubClient mqttClient(wifiClient);
 
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
-//Variablen zum Speichern der Zeit
+//variables for saving the time
 volatile uint32_t gameTimer = 0;
 volatile uint32_t lastIsrAt = 0;
 volatile uint32_t gameCount = 0;
 volatile uint32_t saveGameTime = 0;
 
-//Variablen zum Steuern von Funktionen
+//variables to control the functions
 volatile bool startTimer = false;
 volatile bool timerActive = false;
 volatile bool ledFinish = false;
 
-//Variable für die eingebaute LED-Pin, die aufleuchten soll,
-//wenn das Ziel erreicht wurde
+//variable for the build-in LED-pin, 
+//which has to light up if the player has reached the goal
 const int ledPin = 22;
 
 hw_timer_t * timer = NULL;
 volatile SemaphoreHandle_t timerSemaphore;
 
-//Funktion onTimer, in der die Zeitvariable immer um 1 erhöht wird
+//function onTimer, where the timervariable always increments by one
 void ARDUINO_ISR_ATTR onTimer(){
 
     portENTER_CRITICAL_ISR(&timerMux);
@@ -57,7 +56,7 @@ void ARDUINO_ISR_ATTR onTimer(){
 
 }
 
-//Funktion, um sich mit dem WLAN zu verbinden
+//function to connect with wifi
 void connectToWiFi() {
   Serial.println();
   Serial.print("Connecting to ");
@@ -69,14 +68,14 @@ void connectToWiFi() {
     Serial.print(".");
   }
 
-  //erfolgreich mit WLAN verbunden
+  //if connected with wifi
   Serial.println("");
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 }
 
-//Funktion, um Verbindung mit MQTT-Broker herzustellen
+//function to connect with mqtt broker
 void setupMQTT() {
 
   mqttClient.setServer(mqtt_broker, 1883);
@@ -86,7 +85,7 @@ void setupMQTT() {
     if (mqttClient.connect("ESP32Client")) {
       Serial.println("connected");
 
-      //Nachrichten werden hier subscribed
+      //subscribing messages here
       mqttClient.subscribe("start/M01");
       mqttClient.subscribe("finished/M01");
 
@@ -98,24 +97,24 @@ void setupMQTT() {
   }
 }
 
-//Funktion, um die Nachrichten, die subscribed wurden, zu verarbeiten
+//function to process the received essages
 void callback(char* topic, byte* message, unsigned int length) {
   
   Serial.print("Message arrived in topic: ");
   Serial.print(topic);
   Serial.print(". Message: ");
-  String messageTemp; //String um die empfangene Nachricht dort zu speichern
+  String messageTemp; //string to save the incoming message
 
-  //Inhalt der empfangenen Nachricht wird durchlaufen und die Zeichen in
-  //chars umgewandelt, da diese als Byte empfangen werden,
-  //diese werden anschließend in den String nacheinander einfügt
+//topic of the received message will be runned through
+//signs are converted to chars, because they are received as bytes
+//after that, the chars will be inserted into the string
   for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
     messageTemp += (char)message[i];
   }
   Serial.println();
 
-  //Bei Empfang der Nachricht START, soll der Timer aktiviert werden
+//if we receive the message START, timer will be activated
   if (String(topic) == "start/M01") {
     if(strcmp(messageTemp.c_str(), "START") == 0) {
       if(!startTimer)
@@ -123,8 +122,7 @@ void callback(char* topic, byte* message, unsigned int length) {
         startTimer = true;
         startTimerGo();
       }
-      //Falls Nachricht bereits aktiviert wurde, soll der Timer zurückgesetzt
-      //und danach wieder gestartet werden
+        //if the timer is already activated, the timer will be reset and restarted
       else
       {
         xSemaphoreGiveFromISR(timerSemaphore, NULL);
@@ -134,21 +132,21 @@ void callback(char* topic, byte* message, unsigned int length) {
       
     }
   }
-  //Bei Empfang des topics finished, soll der Timer gestoppt werden
+    //if we receive the message "finished", timer will be stopped
   else if (String(topic) == "finished/M01") {
     ledFinish = true;
     stopTimer();
   }
 }
 
-//Funktion um den Timer und dazugehörige Variablen zurückzusetzen
+//function to reset the timer and the variables
 void resetTimer() {
 
   if (timer) { 
     timerDetachInterrupt(timer);
     timerAlarmDisable(timer); 
     timerEnd(timer); 
-    timer = NULL; //Null um kennzuzeichnen, dass kein Timer mehr aktiv ist
+    timer = NULL; //"null" for no more activated timer
   }
 
   timerActive = false;
@@ -156,7 +154,7 @@ void resetTimer() {
   lastIsrAt = 0;
 }
 
-//Funktion, um den Timer zu stoppen (wenn das Ziel im Labyrinth erreicht wurde)
+//function to stop the timer if the goal has reached
 void stopTimer() {
 
   if (timer) {
@@ -164,23 +162,22 @@ void stopTimer() {
     timerAlarmDisable(timer);
     timerEnd(timer);
 
-    //Abgelaufene Zeit wird in der Variable festgehalten, um diese
-    //zu publishen für die Bestenliste
+    //time will be saved in a variables for publishing in the leaderboard
     saveGameTime = gameCount; 
     Serial.println("Gametime:");
     Serial.println(saveGameTime);
 
-    //Wird in einen String zum publishen gespeichert
+    //saving in a string for publishing
     String saveTime = String(saveGameTime);
     mqttClient.publish("endTime/M01", saveTime.c_str());
   }
 }
 
-//Funktion, um den Timer zu starten
+//function to start the timer
 void startTimerGo() {
 
   if (!timerActive) {
-    //Timer wird initialisiert
+    //initializing the timer
     timer = timerBegin(0, 80, true);
     timerAttachInterrupt(timer, &onTimer, true);
     timerAlarmWrite(timer, 1000000, true);
@@ -190,9 +187,7 @@ void startTimerGo() {
   }
 }
 
-//In der Setup Funktion werden die Verbindungen zum WLAN und zu den
-//Sensoren hergestellt, MQTT-Broker und Port werden mithilfe der Variablen
-//eingestellt
+//connecting to wifi and sensors in the setup function and setting the mqtt broker and port with variables
 void setup() {
   Serial.begin(115200);
   connectToWiFi();
@@ -206,13 +201,13 @@ void setup() {
 
   pinMode(ledPin, OUTPUT);
 
-  //MPU6050 Sensor verbinden
+  //connecting to MPU6050 sensors
   while (!mpu.begin()) {
     Serial.println("Could not find a valid MPU6050 sensor, check wiring!");
     delay(500);
   }
 
-  //Semaphore wird erstellt, zum informieren, wenn der Timer startet
+  //creating semaphore to inform when the timer has started
   timerSemaphore = xSemaphoreCreateBinary();
 }
 
@@ -227,17 +222,16 @@ void loop() {
 
   if (ledFinish)
       {
-        digitalWrite(ledPin, LOW); //LED bei 22 ist aus -> mit LOW geht es an
+        digitalWrite(ledPin, LOW); //LED at 22 off -> on with LOW
         delay(500);
         ledFinish = false;
       }
 
-  //Sensoren als Variablen definieren für die Accelerometer, Gyro und
-  //Temperatur Werte
+//sensors as variables for accelerometer, gyro and temperature
   sensors_event_t a, g, temp;
   mpu.getEvent(&a, &g, &temp);
 
-  //Prüfung ob Timer aktiviert wurde
+//check if timer is activated
   if (startTimer) {
       if (xSemaphoreTake(timerSemaphore, 0) == pdTRUE){
 
@@ -245,8 +239,7 @@ void loop() {
         gameCount = gameTimer;
         portEXIT_CRITICAL(&timerMux);
 
-      //Zeit vom Timer und die Temperatur werden in einem
-      //String gespeichert
+    //saving the time and temperature in a string
       String tempTime = "Spielzeit: ";
       tempTime += String(gameCount);
       tempTime += " Sek ";
@@ -254,7 +247,7 @@ void loop() {
       tempTime += String(temp.temperature);
       tempTime += " °C";
 
-      //String temptime wird an das topic "temp/M01" gepublished
+      //String temptime will be published to topic "temp/M01"
       mqttClient.publish("temp/M01", tempTime.c_str());
       delay(500);
 
@@ -266,13 +259,12 @@ void loop() {
     }
   }
 
-  //Variaben für roll, pitch und yaw, die man durch die 
-  //Gyro Sensorwerte erhält
+  //variables for roll, pitch und yaw
   float roll = g.gyro.x;
   float pitch = g.gyro.y;
   float yaw = g.gyro.z;
 
-  //Werte mit Kommatas in einem String speichern
+//saving the values with comma in a string
   String accOrient = String (a.acceleration.x);
   accOrient += ",";
   accOrient += String(a.acceleration.y);
@@ -285,7 +277,7 @@ void loop() {
   accOrient += ",";
   accOrient += String(yaw);
 
-  //accOrient an topic "mpu/M01" publishen
+  //publishing accOrient to topic "mpu/M01"
   mqttClient.publish("mpu/M01", accOrient.c_str());
   delay(50);
 }
