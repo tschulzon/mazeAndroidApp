@@ -8,9 +8,9 @@ import com.hivemq.client.mqtt.mqtt3.Mqtt3AsyncClient;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * MQTT Klasse
- * Connect und Disconnect finden hier statt
- * Ebenso wie Subscribe, Unsubscribe und Published
+ * MQTT class
+ * Connecting and Disconnecting to Broker
+ * and Subscribe, Unsubscribe and Publish
  */
 public class MqttManager {
     private static final String TAG = "Test";
@@ -35,7 +35,7 @@ public class MqttManager {
     }
 
     /**
-     * Verbindet sich mit dem Broker
+     * connecting to broker
      *
      */
     public void connectToBroker() {
@@ -61,7 +61,7 @@ public class MqttManager {
                 Log.e(TAG, "Fehler bei der Verbindung zum MQTT-Broker: " + e.getMessage());
             }
 
-            // Eine kurze Wartezeit, bevor ein erneuter Verbindungsversuch unternommen wird
+            // short wait before connecting again
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -71,7 +71,7 @@ public class MqttManager {
     }
 
     /**
-     * Subscribed die verschiedenen Topics des MQTT Brokers
+     * subscribing different topics to broker
      */
     public void subscribeToBroker(String topic, MqttMessageListener listener) {
         client.subscribeWith()
@@ -91,7 +91,7 @@ public class MqttManager {
     }
 
     /**
-     * Unsubscribed vom Broker
+     * Unsubscribing from broker
      */
     public void unsubscribeFromBroker(String topic) {
         client.unsubscribeWith()
@@ -108,7 +108,7 @@ public class MqttManager {
     }
 
     /**
-     * Published Topics zum Broker
+     * Publishing topics to broker
      */
     public void publishToBroker(String topic, String msg){
         client.publishWith()
