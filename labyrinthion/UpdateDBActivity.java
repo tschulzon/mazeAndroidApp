@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 /**
- * Die OnCreate Methode wird überschrieben und ein Layout wird festgelegt
+ * OnCreate Method will be overridden and a layout will be defined
  */
 public class UpdateDBActivity extends AppCompatActivity {
 
