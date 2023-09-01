@@ -10,7 +10,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 /**
- * Klasse die fuer die Erstellung der Datenbank verantwortlich ist
+ *
+ *class which is responsible for creating the database
  */
 class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -31,9 +32,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     *
-     * Erstellt die Datenbank mit einem Tabellennamen einer ID, einem Namen und einer Zeit
-     * db.execSQL(query) führt das ganze mit @param db anhand des query aus
+     *creating database with tablename, id, name and time
+     * db.execSQL(query) executes it with @param db query 
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -46,8 +46,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      *
-     * Aktualisiert die Datenbank indem sie erst gedroppt wird und dann wieder in OnCreate aufgerufen wird
      *
+     * updating database, database will be dropped and opened again in onCreate
      *
      */
     @Override
@@ -58,7 +58,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
-     *Fuegt der Datenbank einen Eintrag hinzu
+     *insert new item in database
      */
     void addData (String name, String time) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -77,10 +77,10 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
-     * Liest alle Daten aus und gibt einen Cursor zurück
-     * Erst wird diese Nach der Zeit geordnet
-     * Danach wird sie mit getReadableDatabase() lesbar gemacht
-     * Cursor wird zurückgegeben und ermöglicht den zugriff auf die Datenbank
+     * reads all data and pass cursor
+     * first it will be ordered by time
+     * then data will be readable with getReadableDatabase()
+     * cursor passed back and access to database is possible
      */
     Cursor readAllData() {
         String query = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + COLUMN_TIME;
@@ -95,7 +95,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
 
 
     /**
-     * Loescht alle Daten aus der SQLite-Datenbanktabelle
+     * deleting all data in SQLite-Database table
      */
     void deleteAll(){
         SQLiteDatabase db = this.getWritableDatabase();
