@@ -18,8 +18,8 @@ import android.widget.Toast;
 
 /**
  *  MainActivity Class
- *  Nutzer kann von hieraus das Spiel starten
- *  Funktioniert nur wenn eine IP-Adresse eigestellt wurde
+ *  player can start here the game
+ *  but only if a ip address has been entered
  */
 public class MainActivity extends AppCompatActivity {
     int soundOn = 0;
@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
     public static boolean useSmartphone = true;
 
     /**
-     * Button um die Spielfeld Activity aufzurufen
-     * Solange keine IP-Adresse hinzugefuegt wurde gibt es einen Text aus
+     * button to open the game activity
+     * if no ip address has entered, a message will be shown
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Bekommt die Daten des Broker von IPActivity
+     * 
+     *getting data from broker from ipActivity
      */
     public void getData() {
         BROKER = IpActivity.BROKER;
@@ -77,14 +78,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * LabActivity wird aufgerufen
+     * open LabActivity
      */
     public void openLabActivity() {
         Intent intent = new Intent(this, LabActivity.class);
         startActivity(intent);
     }
     /**
-     * Oeffnet die IPActivity hier kann eine IP-Adresse eingetragen werden
+     * opens the IPActivity where IP address can be entered
      */
     public void openIpActivity() {
         Intent intent = new Intent(this, IpActivity.class);
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * BestenlisteActivity wird aufgemacht
+     * open leaderboard
      */
     public void openBestenlisteActivity() {
         Intent intent = new Intent(this, BestenlisteActivity.class);
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Baut den Header nach der example_menu.xml Datei auf
+     * building header
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Menuefunktionen im Header werden hier deklariert
-     * je nach ID in der example_menu.xml datei wird die funktion aufgerufen
+     * defining header menue functions
+     * 
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
