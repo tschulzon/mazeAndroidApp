@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 
 /**
- * Adapter der fuer den ViewHolder der Datenbank verantwortlich ist
+ * Adapter which is responsible for the ViewHolder of the database
  */
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
@@ -30,7 +30,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         }
 
     /**
-     * ViewHolder erstellen
+     * creating ViewHolder
      *
      * @param parent   The ViewGroup into which the new View will be added after it is bound to
      *                 an adapter position.
@@ -47,7 +47,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     }
 
     /**
-     * Daten an den ViewHolder binden
+     * binding data on the ViewHolder
      * @param holder   The ViewHolder which should be updated to represent the contents of the
      *                 item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
@@ -61,7 +61,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     }
 
     /**
-     * Anzahl der Elemente in der Liste zurückgeben
+     *passing the number of elements in the leaderboard
      */
 
     @Override
