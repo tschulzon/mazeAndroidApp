@@ -31,9 +31,9 @@ import android.view.View;
 import java.util.Random;
 
 /**
- * Hier wird die Activity des eigentlichen Spiels aufgerufen
- * Am Anfang werden erstmal die random Werte fuer das spaetere Maze ermittelt
- * Verschiedene Topics werden initalisiert
+ * here is the activity where the maze is generated
+ * at the beginning random values for the maze are generated
+ * different topics will be initialized
  */
 public class LabActivity extends AppCompatActivity {
 
@@ -77,7 +77,7 @@ public class LabActivity extends AppCompatActivity {
     private final String msgFinish = "FINISH";
 
     //Brokerdaten
-    private static String BROKER = "192.168.1.32";
+    private static String BROKER = "xxx";
     private static int PORT = 1883;
 
     private static float mqttSensorX;
@@ -87,7 +87,7 @@ public class LabActivity extends AppCompatActivity {
     public static boolean useSmartphone = true;
 
     /**
-     * Je nachdem was der Spieler ausgewaehlt hat wird als Steuerung angezeigt
+     * showing the controls which the player has chosen
      */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -104,7 +104,7 @@ public class LabActivity extends AppCompatActivity {
     }
 
     /**
-     * Baut den Header nach der example_menu.xml Datei auf
+     * building the header
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -114,8 +114,8 @@ public class LabActivity extends AppCompatActivity {
     }
 
     /**
-     * Menuefunktionen im Header werden hier deklariert
-     * je nach ID in der example_menu.xml datei wird die funktion aufgerufen
+     * defining menue functions in the header
+     * 
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -180,10 +180,10 @@ public class LabActivity extends AppCompatActivity {
 
 
     /**
-     * OnCreate Methode der LabActivity
-     * Es werden ersteinmal die Variabel aus der MainActivity übernommen
-     * Erzeugt dann eine Instanz der MazeView und füge sie zum Layout hinzu
-     * Ruft dann initActivity auf
+     * OnCreate method from LabActivity
+     * getting the values from the MainActivity file
+     * creating instance of the maze and insert it into the layout
+     * open InitActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,10 +216,10 @@ public class LabActivity extends AppCompatActivity {
 
 
     /**
-     * Ueberprueft erstmal was fuer eine Steuerung ausgewaehlt wurde
-     * Je nachdem wird eine die Steuerung anderes ermoeglicht
-     * Beim Handy wird die Funktion SensorEventListener bei einer bewegung verwendet
-     * Beim Controller wird die Kugel in der Funktion on MessageReceived aktualisiert
+     * checking which controls has been chosen
+     * depending on which was chosen, the other control is available
+     * on the smartphone the function SensorEventListener will be used for movement
+     * on the esp32 the ball will be moved with the function onMessageReceived 
      */
     private void initActivity(){
 
@@ -236,7 +236,7 @@ public class LabActivity extends AppCompatActivity {
         }
         else
         {
-                // Handysteuerung deaktivieren
+                //deactivate smartphone control
                 sensorManager.unregisterListener(sensorEventListener);
 
                 mqttManager.subscribeToBroker("mpu/M01", new MqttManager.MqttMessageListener() {
@@ -249,9 +249,9 @@ public class LabActivity extends AppCompatActivity {
                         mqttSensorX = mqtt_x;
                         mqttSensorY = mqtt_y;
 
-                        // Kugelposition aktualisieren
+                        // update ballposition
                         mazeView.updateBallPosition(mqttSensorX, mqttSensorY);
-                        mazeView.invalidate(); //Zeichnet das Maze
+                        mazeView.invalidate(); //drawing the maze
 
                     }
                 });
@@ -269,18 +269,18 @@ public class LabActivity extends AppCompatActivity {
                 float yAxis = event.values[1];
 
                 mazeView.updateBallPosition(xAxis, yAxis);
-                mazeView.invalidate(); // Zeichnet das Maze neu
+                mazeView.invalidate(); //new drawing of the maze
             }
         }
 
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            // Wird aufgerufen, wenn sich die Genauigkeit des Sensors ändert
+            //will be opened if the accuracy of the sensors has changed
         }
     };
 
     /**
-     * OnResume ermoeglicht eine wiederaufnahme des App Betriebs
+     * OnResume opens the app again if it has been closed
      */
     @Override
     protected void onResume(){
@@ -306,7 +306,7 @@ public class LabActivity extends AppCompatActivity {
 
 
     /**
-     * Pausiert die App und disconnected vom MQTT Manager
+     * pause the game and disconnected from mqtt broker
      */
     @Override
     protected void onPause() {
@@ -315,10 +315,9 @@ public class LabActivity extends AppCompatActivity {
         Log.d(TAG, "Broker ist nicht mehr verbunden");
     }
 
-    //Mit Hilfe von ChatGpt
+    //with help of chatGPT
     /**
-     * In MazeGenerator wird generateMaze und setGoal aufgerufen
-     * Mit Hilfe von ChatGpt
+     * In MazeGenerator the methods generateMaze und setGoal will be opened
      */
     public static class MazeGenerator {
         private final int width;
@@ -334,15 +333,15 @@ public class LabActivity extends AppCompatActivity {
         }
 
         /**
-         * Das aktuelle Feld maze[x][y] wird auf 1 gesetzt, um es als besucht zu markieren
-         * Der Startpunkt bei maze[0][0] wird auf 2 gesetzt
-         * Als Ende nehmen wir maze[MAZE_WIDTH - 1][MAZE_HEIGHT - 1] und setzen es auf 3
-         * Array direction wird erstellt und gemischt (Richtung)
-         * In einer Schleife wird jede Richtung geprueft
-         * Schaut ob das neue Feld maze[nx][ny] noch nicht besucht ist
-         * Das neue Feld maze[nx][ny] und das Feld in der Mitte zwischen dem aktuellen Feld und dem neuen Feld maze[(x + nx) / 2][(y + ny) / 2]
-         * werden auf 1 gesetzt, um sie als besucht zu markieren und eine Wand zu entfernen.
-         * generate maze wird dann rekursive aufgerufen bis das Labyrinth vollstaendig generiert ist.
+         * current field maze[x][y] will be set on 1 to show it has been visited
+         * beginning maze[0][0] will be set on 2
+         * for the goal maze[MAZE_WIDTH - 1][MAZE_HEIGHT - 1] it will be set on 3
+         * Array direction is creating and will be random mixed 
+         * checking every direction in a for-loop
+         * checking if the new field maze[nx][ny] has been visited yet
+         * new field maze[nx][ny] and the field in the middle of the current and new field maze[(x + nx) / 2][(y + ny) / 2]
+         * will be set on 1, for tagging it as visited and to remove a wall
+         * generate maze will be opened recursive until the maze is completed 
          */
         private void generateMaze(int x, int y) {
             maze[x][y] = 1;
@@ -376,24 +375,23 @@ public class LabActivity extends AppCompatActivity {
         }
 
         /**
-         * SetGoal Funktion die das Ziel festlegt und eine moegliche Wand daneben frei macht
-         * Ausgang wird hier definiert
-         * soll immer rechts unten in der Ecke sein
+         * SetGoal function for defining a goal
+         * should be always in the corner right at the bottom
+         * 
          */
-        //Ohne ChatGpt
+        //without chatGPT
         private void setGoal(){
-            //Ausgang wird hier definiert
-            //soll immer rechts unten in der Ecke sein
             int goalX = width - 1;
             int goalY = height - 1;
 
-            //hier wird überprüft ob das Feld über dem Ziel eine Wand ist
-            //falls ja, soll das Feld links daneben ein Weg sein
+            //checking if field above the goal is a wall
+            //if yes, field left of it should be a path
             if (maze[goalX][goalY - 1] != 1) {
                 maze[goalX - 1][goalY] = 1;
             }
-            //hier wird überprüft ob das Feld links neben dem Ziel eine Wand ist
-            //falls ja, ist das Feld über dem Ziel ein Weg
+
+            //checking if field left from the goal is a wall
+            //if yes, field above of it should be a path
             else if(maze[goalX - 1][goalY] != 1) {
                 maze[goalX][goalY - 1] = 1;
             }
@@ -401,10 +399,9 @@ public class LabActivity extends AppCompatActivity {
             maze[goalX][goalY] = 3;
 
         }
-        //Ohne ChatGpt
 
         /**
-         * Array wird durchgemischt
+         * shuffle the array
          */
         private void shuffleArray(int[] array) {
             Random random = new Random();
@@ -421,10 +418,7 @@ public class LabActivity extends AppCompatActivity {
         }
 
     }
-    //Mit Hilfe von ChatGpt
-
-
-    //Mit Hilfe von ChatGpt
+    //with chatGPT
 
     public class MazeView extends View {
         private int[][] maze;
@@ -449,12 +443,12 @@ public class LabActivity extends AppCompatActivity {
         }
 
         /**
-         * Wand und Wegfarben werden festgelegt
-         * Ball wird auf 0,0 gesetzt
+         * defining wall and path colors
+         * ball position on 0,0
          */
         private void init() {
 
-            String hexColor = "#9eb76b"; // Beispiel-Hex-Farbwert
+            String hexColor = "#9eb76b";
             int colorWall = Color.parseColor(hexColor);
 
             MazeGenerator mazeGenerator = new MazeGenerator(MAZE_WIDTH, MAZE_HEIGHT);
@@ -479,30 +473,30 @@ public class LabActivity extends AppCompatActivity {
 
 
         /**
-         * Ist für die eigentliche Bewegung des Ball verantwortlich
-         * Begrenzt die Achsenwerte auf den definierten Wertebereich
-         * Bestimmt die Geschwindigkeit des Balls
-         * Fuehrt danach dann Kollisionskontrollen aus
-         * Nach der Berechnung der neuen Zelle wird geschaut ob es ein Weg ist
-         * Am Ende findet eine pruefung statt ob der Ball im Ziel ist
+         * function for the movement of the ball
+         * limit axis values based on definied range of values
+         * defining speed of the ball
+         * checking wall collision
+         * after calculating new cell, checking if field is a path
+         * at the end checking if ball is in the goal
          */
         public void updateBallPosition(float xAxis, float yAxis) {
-            // Begrenzt die Achsenwerte auf den definierten Wertebereich
+            // limit axis values based on definied range of values
             xAxis = Math.max(Math.min(xAxis, 95.0f), -85.0f);
             yAxis = Math.max(Math.min(yAxis, 2.0f), -2.0f);
 
-            //Bestimmt die Geschwindigkeit des Balls
+            //defining speed of the ball
             float acceleration = 0.2f;
             float newBallX = ballX - xAxis * acceleration;
             float newBallY = ballY + yAxis * acceleration;
 
-            // Prüft ob die neue Position mit den Wänden kolidiert
+            // checking if new position is a wall collision
             if (!checkWallCollision(ballX, ballY, newBallX, newBallY)) {
-                // Berechnet die neue Position der Zelle
+                // calculating new position of the cell
                 int newCellX = Math.round(newBallX);
                 int newCellY = Math.round(newBallY);
 
-                // Prüft ob die neue Zelle im Labyrinth ist und ein Weg
+                // after calculating new cell, checking if field is a path and in the maze
                 if (newCellX >= 0 && newCellX < MAZE_WIDTH && newCellY >= 0 && newCellY < MAZE_HEIGHT && maze[newCellX][newCellY] != 0) {
                     ballX = newBallX;
                     ballY = newBallY;
@@ -521,7 +515,7 @@ public class LabActivity extends AppCompatActivity {
                 ballY = MAZE_HEIGHT - 1;
             }
 
-            // Prüft ob der Ball im Ziel angelangt ist
+            // checking if ball is in the goal
             if (maze[(int) ballX][(int) ballY] ==  3 && !isGameFinished) {
                 if (!useSmartphone) {
                     LabActivity.this.runOnUiThread(new Runnable() {
@@ -543,9 +537,9 @@ public class LabActivity extends AppCompatActivity {
         }
 
         /**
-         * Kollisions pruefung
-         * Prueft ob der Ball sich horizontal bewegt dann erst links und dann recht
-         * Prueft ob der Ball sich vertikal bewegt dann erst oben und dann unten
+         * collision check
+         * checking if ball is moving horizontal, then left and then right
+         * checking if ball is moving , then top and then bottom
          */
         private boolean checkWallCollision(float startX, float startY, float endX, float endY) {
             int cellX1 = Math.round(startX);
@@ -553,9 +547,9 @@ public class LabActivity extends AppCompatActivity {
             int cellX2 = Math.round(endX);
             int cellY2 = Math.round(endY);
 
-            // Prüft ob der Ball sich horizontal bewegt
+            // checking if ball is moving horizontal
             if (cellY1 == cellY2) {
-                // Prüft links
+                // check left movement
                 if (endX < startX) {
                     for (int x = cellX2; x <= cellX1; x++) {
                         if (x >= 0 && maze[x][cellY2] == 0) {
@@ -563,7 +557,7 @@ public class LabActivity extends AppCompatActivity {
                         }
                     }
                 }
-                // Prüft rechts
+                // check right movement
                 else if (endX > startX) {
                     for (int x = cellX1; x <= cellX2; x++) {
                         if (x < MAZE_WIDTH && maze[x][cellY2] == 0) {
@@ -572,9 +566,9 @@ public class LabActivity extends AppCompatActivity {
                     }
                 }
             }
-            // Prüft ob der Ball sich vertikal bewegt
+            // checking if ball is moving vertikal
             else if (cellX1 == cellX2) {
-                // Prüft oben
+                // check top movement
                 if (endY < startY) {
                     for (int y = cellY2; y <= cellY1; y++) {
                         if (y >= 0 && maze[cellX2][y] == 0) {
@@ -582,7 +576,7 @@ public class LabActivity extends AppCompatActivity {
                         }
                     }
                 }
-                // Prüft unten
+                //check bottom movement
                 else if (endY > startY) {
                     for (int y = cellY1; y <= cellY2; y++) {
                         if (y < MAZE_HEIGHT && maze[cellX2][y] == 0) {
@@ -604,9 +598,9 @@ public class LabActivity extends AppCompatActivity {
         }
 
         /**
-         * OnDraw Funktion
-         * Zeichnet das Maze auf den Canvas
-         * Zeichnet den Ball
+         * OnDraw function
+         * drawing maze on canvas
+         * drawing the ball
          */
         @Override
         protected void onDraw(Canvas canvas) {
@@ -640,7 +634,7 @@ public class LabActivity extends AppCompatActivity {
                 }
             }
 
-            // Zeichnet den Ball
+            //drawing ball
             float ballRadius = cellSize / 2f;
             float ballCenterX = ballX * cellSize + ballRadius;
             float ballCenterY = ballY * cellSize + ballRadius;
@@ -651,22 +645,22 @@ public class LabActivity extends AppCompatActivity {
             invalidate();
         }
     }
-    //Mit Hilfe von ChatGpt
+    //with help of chatgpt
 
     /**
-     * Wird ausgeloeslt wenn der Ball im Ziel ist
-     * Schickt an den MQTT ein Finish Topic
-     * Spielt mithilfe des MediaPlayers einen Sound ab
-     * Speichert endZeit für die Bestenliste
-     * Ruft zum schluss openBestenlisteActivity() auf um zur Bestenliste zu gelangen
+     * will be opened if ball reached the goal
+     * sending to mqtt a finish topic
+     * playing a sound
+     * saving endTime for leaderboard
+     * at the end openBestenlisteActivity() will be opened for leaderboard 
      */
     public void goalfunction() {
         mqttManager.publishToBroker(topicFinish, msgFinish);
 
-        //Aus dem Buch Kapitel 14 Multimedia
+        //from a book chapter 14 Multimedia
         MediaPlayer mediaPlayer = MediaPlayer.create(LabActivity.this,R.raw.winsound);
         mediaPlayer.start();
-        //Aus dem Buch
+        //from a book
 
         zeitBestenliste = endZeit;
 
@@ -678,7 +672,7 @@ public class LabActivity extends AppCompatActivity {
     }
 
     /**
-     * BestenlisteActivity wird aufgemacht
+     * open leaderboard
      */
     public void openBestenlisteActivity() {
         Intent intent = new Intent(this, BestenlisteActivity.class);
