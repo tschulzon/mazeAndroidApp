@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 
 /**
- * Seite mit Bestenliste
+ * page with leaderboard
  */
 public class BestenlisteActivity extends AppCompatActivity {
     int soundOn = 0;
@@ -40,8 +40,8 @@ public class BestenlisteActivity extends AppCompatActivity {
     public static String zeitBestenliste;
 
     /**
-     * Funktion ist dafuer da, die Steuerung anzuzeigen, die davor ausgewaehlt wurde.
-     *
+     * 
+     *function to show the controls, which was chosen
      *
      */
     @Override
@@ -57,8 +57,8 @@ public class BestenlisteActivity extends AppCompatActivity {
 
 
     /**
-     * Baut den Header nach der example_menu.xml Datei auf
      *
+     *building the header like example_menu.xml file
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,8 +69,8 @@ public class BestenlisteActivity extends AppCompatActivity {
     }
 
     /**
-     * Menuefunktionen im Header werden hier deklariert
-     * je nach ID in der example_menu.xml datei wird die funktion aufgerufen
+     * defining menue functions in the header
+     * 
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -114,8 +114,8 @@ public class BestenlisteActivity extends AppCompatActivity {
 
 
     /**
-     * OnCreate Methode
-     * Id's werden zugewiesen
+     * OnCreate method
+     * ids will be assigned
      *
      */
     @Override
@@ -190,8 +190,8 @@ public class BestenlisteActivity extends AppCompatActivity {
     }
 
     /**
-     * Speichert die Daten in der Datenbank
-     * Id,Name und die Zeit werden gespeichert
+     * saving the values in the leaderboard
+     *saving id,name, time
      */
     void storeData() {
         Cursor cursor = DB.readAllData();
@@ -208,8 +208,8 @@ public class BestenlisteActivity extends AppCompatActivity {
 }
 
     /**
-     * Uebernimmt die {@link LabActivity#finalTime} in zeitBestenliste
-     *  und zeigt diese dann an
+     * getting the {@link LabActivity#finalTime} in "zeitBestenliste"
+     * and showing it
      */
     private void getTime() {
         zeitBestenliste = LabActivity.finalTime;
@@ -218,7 +218,7 @@ public class BestenlisteActivity extends AppCompatActivity {
 
 
     /**
-     * MainActivity wird aufgemacht
+     * open MainActivity
      */
     public void openMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
@@ -227,7 +227,7 @@ public class BestenlisteActivity extends AppCompatActivity {
 
 
     /**
-     * LabActivity wird aaufgerufen
+     * open LabActivity
      */
     public void openLabActivity() {
         Intent intent = new Intent(this, LabActivity.class);
